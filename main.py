@@ -1,10 +1,11 @@
 import cv2
 import numpy as np
+from numpy.linalg import inv
 import matplotlib.pyplot as plt
 from PIL import Image
 
-def main():
-    img = cv2.imread("data/women.jpg")
+def main(img_path, save_path):
+    img = cv2.imread(img_path)
     print(img.shape)
 
     print("Click on the screen and press any key for end process")
@@ -13,29 +14,30 @@ def main():
 
     # get transform
     origin_points = np.float32(points)
-    trans_points = np.float32([[65, 90], [95, 90], [80, 120]])
-    M = cv2.getAffineTransform(origin_points, trans_points)
-    print(f"M = {M[:2].round(1)}")
-    #res = cv2.warpAffine(img, M, (160, 190))
-    #api = Image.fromarray(np.uint8(res))
-    #api.save("data/api.png")
+    trans_points = np.float32([[65, 90, 1], [95, 90, 1], [80, 120, 1]])
+    f = np.concatenate((origin_points, [[1],[1],[1]]), axis=1).T
+    g = trans_points.T
+
+    # affine transform
+    a = np.dot(f,g.T)
+    b = inv(np.dot(g, g.T))
+    M = np.dot(a,b) 
+    print(f"M = {M.round(1)}")
 
     # generate new img
-    new_img = np.zeros((160, 190, 3))
+    new_img = np.zeros((190, 160, 3))
     for i in range(new_img.shape[0]):
         for j in range(new_img.shape[1]):
-            new_pixel = np.float32([i,j,1]).reshape(-1,1)
+            new_pixel = np.float32([j, i, 1]).reshape(-1,1)
             original_pixel=np.dot(M, new_pixel)
             
-            #將數值四捨五入及將負數改為0
-            #original_pixel = np.around(original_pixel, decimals=-1)
+            #將將負數改為0
             original_pixel = np.where(original_pixel>0, original_pixel, 0)
 
             # 對應回原始圖片pixel
-            new_img[i,j] = img[int(original_pixel[0]), int(original_pixel[1])]
+            new_img[i, j] = img[int(original_pixel[1]), int(original_pixel[0])]
 
-    new = Image.fromarray(np.uint8(new_img))
-    new.save("data/affine_women.png")
+    cv2.imwrite(save_path, new_img)
 
 
 def mouse_handler(event, x, y, flags, data):
@@ -76,4 +78,7 @@ def get_points(img):
     return data['points']
 
 if __name__ == "__main__":
-    main()
+    main("data/both.bmp", "data/affine_both_man.png")
+    #main("data/both.bmp", "data/affine_both_women.png")
+    #main("data/man.jpg", "data/affine_man.png")
+    #main("data/women.jpg", "data/affine_women.png")
