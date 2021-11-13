@@ -45,7 +45,7 @@ cv2.imwrite(save_path, new_img)
 
 
 <p float="left">
-     <img src="data/women.jpg" width="600" /> <img src="data/affine_women.png"/>
-     <img src="data/man.jpg" width="600" /> <img src="data/affine_man.png"/>
-     <img src="data/both.bmp" width="600" /> <img src="data/affine_both_man.png"/> <img src="data/affine_both_women.png"/>
+     <img src="data/women.jpg" width="500" /> <img src="data/affine_women.png"/>
+     <img src="data/man.jpg" width="500" /> <img src="data/affine_man.png"/>
+     <img src="data/both.bmp" width="500" /> <img src="data/affine_both_man.png"/> <img src="data/affine_both_women.png"/>
 </p>
