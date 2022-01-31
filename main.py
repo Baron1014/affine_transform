@@ -78,7 +78,7 @@ def get_points(img):
     return data['points']
 
 if __name__ == "__main__":
-    main("data/both.bmp", "data/affine_both_man.png")
+    #main("data/both.bmp", "data/affine_both_man.png")
     #main("data/both.bmp", "data/affine_both_women.png")
     #main("data/man.jpg", "data/affine_man.png")
-    #main("data/women.jpg", "data/affine_women.png")
+    main("data/women.jpg", "data/affine_women.png")
